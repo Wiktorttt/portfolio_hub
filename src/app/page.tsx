@@ -1,103 +1,295 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import {
+  FileText,
+  Lightbulb,
+  TestTube,
+  ChefHat,
+  LineChart,
+  Gamepad2,
+} from 'lucide-react';
+import { api } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [n8nStatus, setN8nStatus] = useState<string>('Checking...');
+  const [isServerDown, setIsServerDown] = useState<boolean>(false);
+  const [testMode, setTestMode] = useState<boolean>(false);
+  const [isDark, setIsDark] = useState<boolean>(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const truncateDescription = (text: string, max = 70) =>
+    text.length > max ? `${text.slice(0, max - 1)}…` : text;
+
+  // Active tools displayed as colored cards
+  const activeTools = [
+    {
+      id: 'summarizer',
+      name: 'Text Summarizer',
+      description: 'Transform lengthy content into concise, actionable summaries',
+      icon: FileText,
+      accent: 'blue',
+    },
+    {
+      id: 'idea-generator',
+      name: 'Idea Generator',
+      description: 'Spark creativity with AI-powered brainstorming sessions',
+      icon: Lightbulb,
+      accent: 'violet',
+    },
+    {
+      id: 'game-idea-generator',
+      name: 'Game Idea Generator',
+      description: 'Game concepts: mechanics, themes, monetization, platforms',
+      icon: Gamepad2,
+      accent: 'indigo',
+    },
+    {
+      id: 'market-analyzer',
+      name: 'Market Analyzer',
+      description: 'Deep dive into market trends and competitive insights',
+      icon: LineChart,
+      accent: 'teal',
+    },
+    {
+      id: 'recipe-recommender',
+      name: 'Recipe Recommender',
+      description: 'Discover personalized recipes based on your preferences',
+      icon: ChefHat,
+      accent: 'orange',
+    },
+  ] as const;
+
+  // No upcoming tools shown on the main page
+
+  // Function to check N8N status
+  const checkN8nStatus = async () => {
+    try {
+      const response = await api.post('/api/webhook/status', {});
+      const data = response.data;
+      
+
+      
+      if (data.code === 201) {
+        setN8nStatus('Connected');
+        setIsServerDown(false);
+      } else if (data.code === 503) {
+        setN8nStatus('Server down');
+        setIsServerDown(true);
+      } else {
+        setN8nStatus(data.status || 'Unknown Status');
+        setIsServerDown(true);
+      }
+    } catch (error: unknown) {
+      console.error('N8N status check failed:', error);
+      
+      // Check if it's a connection refused error
+      const errorObj = error as { response?: { status?: number }; code?: string; message?: string };
+      if (errorObj?.response?.status === 400 || errorObj?.code === 'ECONNREFUSED') {
+        setN8nStatus('Server down');
+        setIsServerDown(true);
+      } else {
+
+        setN8nStatus('Server down');
+        setIsServerDown(true);
+      }
+    }
+  };
+
+  // Set up interval for status checking
+  useEffect(() => {
+    // Initial check
+    checkN8nStatus();
+    
+    // Set up interval for every 10 seconds
+    const interval = setInterval(checkN8nStatus, 10000);
+    
+    // Cleanup interval on component unmount
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Restore theme from cookie on mount
+  useEffect(() => {
+    try {
+      const cookie = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('theme='));
+      const value = cookie?.split('=')[1];
+      if (value === 'dark') {
+        setIsDark(true);
+        document.documentElement.classList.add('dark');
+      } else if (value === 'light') {
+        setIsDark(false);
+        document.documentElement.classList.remove('dark');
+      }
+    } catch {
+      // ignore cookie parsing errors
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    const expires = new Date();
+    expires.setFullYear(expires.getFullYear() + 1);
+    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
+    if (next) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  // Keep component responsive to server status only; no animated background on the new design
+
+  return (
+    <ErrorBoundary>
+      <div className={cn('min-h-screen', isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900')}>
+        {/* Test Mode Toggle */}
+        <div className="fixed bottom-4 left-4 z-50">
+          <button
+            onClick={() => setTestMode(!testMode)}
+            className={cn(
+              'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
+              testMode
+                ? (isDark ? 'bg-orange-500/20 border-orange-400 text-orange-300 hover:bg-orange-500/25' : 'bg-orange-50 border-orange-200 text-orange-600 hover:bg-orange-100')
+                : (isDark ? 'bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50')
+            )}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <TestTube size={16} />
+            <span className="text-sm font-medium">Test Mode</span>
+            <div
+              className={cn(
+                'w-3 h-3 rounded-full transition-colors duration-300',
+                testMode ? 'bg-orange-500' : isDark ? 'bg-slate-600' : 'bg-slate-300'
+              )}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        {/* Theme Toggle */}
+        <div className="fixed bottom-4 right-4 z-50">
+          <button
+            onClick={toggleTheme}
+            className={cn(
+              'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
+              isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+            )}
+            aria-label="Toggle dark mode"
+          >
+            <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
+            <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
+          </button>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 py-14">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className={cn('text-4xl sm:text-5xl font-extrabold tracking-tight', isDark ? 'text-slate-100' : 'text-slate-900')}>
+              <span>Portfolio </span>
+              <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">AI Hub</span>
+            </div>
+            <p className={cn('mt-4 max-w-2xl mx-auto', isDark ? 'text-slate-400' : 'text-slate-500')}>
+              Click any of the tools to start!
+            </p>
+
+            {/* N8N Status pill */}
+            <div className="mt-4 flex justify-center">
+              <div
+                className={cn(
+                  'inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm ring-1',
+                  n8nStatus === 'Connected' && (isDark ? 'bg-emerald-900/30 ring-emerald-700 text-emerald-300' : 'bg-emerald-50 ring-emerald-200 text-emerald-700'),
+                  n8nStatus === 'Server down' && (isDark ? 'bg-red-900/30 ring-red-700 text-red-300' : 'bg-red-50 ring-red-200 text-red-700'),
+                  n8nStatus !== 'Connected' && n8nStatus !== 'Server down' && (isDark ? 'bg-orange-900/30 ring-orange-700 text-orange-300' : 'bg-orange-50 ring-orange-200 text-orange-700')
+                )}
+              >
+                <span
+                  className={cn('h-2 w-2 rounded-full',
+                    n8nStatus === 'Connected' && 'bg-emerald-500',
+                    n8nStatus === 'Server down' && 'bg-red-500',
+                    n8nStatus !== 'Connected' && n8nStatus !== 'Server down' && 'bg-orange-500'
+                  )}
+                />
+                <span className="font-medium">N8N Status:</span>
+                <span className="font-semibold">{n8nStatus}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Active tools */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {activeTools.map(({ id, name, description, icon: Icon, accent }) => {
+              const isDisabled = isServerDown && !testMode;
+              const colors = {
+                blue: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-blue-50 ring-blue-100 hover:ring-blue-200',
+                violet: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-violet-50 ring-violet-100 hover:ring-violet-200',
+                indigo: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-indigo-50 ring-indigo-100 hover:ring-indigo-200',
+                teal: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-teal-50 ring-teal-100 hover:ring-teal-200',
+                orange: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-orange-50 ring-orange-100 hover:ring-orange-200',
+              } as const;
+              const iconBg = {
+                blue: 'bg-blue-600 text-white',
+                violet: 'bg-violet-600 text-white',
+                indigo: 'bg-indigo-600 text-white',
+                teal: 'bg-teal-600 text-white',
+                orange: 'bg-orange-500 text-white',
+              } as const;
+              const dot = {
+                blue: 'bg-blue-500',
+                violet: 'bg-violet-500',
+                indigo: 'bg-indigo-500',
+                teal: 'bg-teal-500',
+                orange: 'bg-orange-500',
+              } as const;
+
+              const Card = (
+                <div
+                  className={cn(
+                    'group relative rounded-2xl p-5 shadow-sm ring-1 transition-all',
+                    colors[accent],
+                    isDisabled && 'opacity-60 cursor-not-allowed'
+                  )}
+                  aria-disabled={isDisabled}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={cn('h-14 w-14 aspect-square shrink-0 rounded-xl flex items-center justify-center', iconBg[accent])}>
+                      <Icon size={26} className="text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className={cn('font-semibold truncate', isDark ? 'text-slate-100' : 'text-slate-900')}>{name}</div>
+                      <div className={cn('text-sm', isDark ? 'text-slate-400' : 'text-slate-600')}>{truncateDescription(description)}</div>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
+                    <span className="font-medium">ACTIVE</span>
+                    <span className={cn('inline-block h-2 w-2 rounded-full', dot[accent])} />
+                  </div>
+                </div>
+              );
+
+              return isDisabled ? (
+                <div key={id}>{Card}</div>
+              ) : (
+                <Link key={id} href={`/${id}`} className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-2xl">
+                  {Card}
+                </Link>
+              );
+            })}
+          </div>
+
+          {/* No in-progress panels */}
+
+          {/* Footer */}
+          <div className={cn('mt-10 text-center text-sm', isDark ? 'text-slate-500' : 'text-slate-500')}>
+            Made by <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Wiktor Siemiński</span>
+          </div>
+
+        </div>
+      </div>
+    </ErrorBoundary>
   );
 }
