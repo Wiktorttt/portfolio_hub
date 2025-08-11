@@ -109,7 +109,8 @@ export async function executeWebhook(
 
     // Make the request to the external webhook with timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 180000); // 3 minutes timeout
+    const { API_TIMEOUT_MS } = await import('./config');
+    const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
     
     const response = await fetch(config.externalUrl, {
       method: 'POST',

@@ -3,10 +3,10 @@ import { executeWebhook, getWebhookConfig } from '@/lib/webhook_utils';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ webhookName: string }> }
+  context: { params: Promise<{ webhookName: string }> }
 ) {
   try {
-    const { webhookName } = await params;
+    const { webhookName } = await context.params;
     
     // Check if webhook exists
     const config = getWebhookConfig(webhookName);
@@ -36,7 +36,7 @@ export async function POST(
     return NextResponse.json(result.data);
 
   } catch (error) {
-    const { webhookName } = await params;
+    const { webhookName } = await context.params;
     console.error(`API route error for webhook ${webhookName}:`, error);
     return NextResponse.json(
       { error: 'Internal server error' },

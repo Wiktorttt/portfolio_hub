@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_TIMEOUT_MS } from './config';
 
 // Create axios instance with default configuration
 export const api = axios.create({
-  timeout: 240000, // 4 minutes timeout
+  timeout: API_TIMEOUT_MS,
   headers: {
     'Content-Type': 'application/json',
   },

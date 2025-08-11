@@ -5,10 +5,15 @@ import Link from 'next/link';
 import RichEditor from '@/components/RichEditor';
 import WebhookButton from '@/components/WebhookButton';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Header from '@/components/Header';
+import ThemeToggle from '@/components/ThemeToggle';
 import FileUpload from '@/components/FileUpload';
-import { ArrowLeft, FileText, Scissors, Sparkles, BookOpen, Paperclip } from 'lucide-react';
+import { ArrowLeft, FileText, Scissors, BookOpen, Paperclip } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { SummarizerResponse, FileAttachment } from '@/lib/webhook_config';
+import { sanitizeHtml } from '@/lib/sanitize';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
 
 // Function to format text with markdown-style formatting
 const formatSummaryText = (text: string): string => {
@@ -38,39 +43,9 @@ export default function SummarizerPage() {
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
   const [result, setResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const { isDark } = useTheme();
 
-  // Sync theme from cookie (consistent with main page)
-  useEffect(() => {
-    try {
-      const cookie = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {
-      // ignore cookie parsing errors
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+  // Theme handled by useTheme hook
 
   const handleSuccess = (data: unknown) => {
     const responseData = data as SummarizerResponse;
@@ -102,38 +77,29 @@ export default function SummarizerPage() {
   };
 
   // Format the result for display
-  const formattedResult = formatSummaryText(result);
+  const formattedResult = sanitizeHtml(formatSummaryText(result));
 
   return (
     <ErrorBoundary>
       <div className={cn('min-h-screen', isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900')}>
       <div className="max-w-6xl mx-auto p-6 sm:p-8">
         {/* Header */}
-        <div className="mb-8">
-          <Link 
-            href="/"
-            className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-indigo-300' : 'text-slate-500 hover:text-indigo-600')}
-          >
-            <ArrowLeft size={16} className="mr-2" />
-            Back to Hub
-          </Link>
-          
-          <div className={cn('relative overflow-hidden rounded-2xl p-6 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-blue-50 ring-blue-100')}>
-            <div className="relative flex items-center gap-4">
-              <div className="h-16 w-16 rounded-xl bg-blue-600 flex items-center justify-center">
-                <FileText className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className={cn('text-3xl sm:text-4xl font-bold mb-1', isDark ? 'text-slate-100' : 'text-slate-900')}>
-                  Summarizer
-                </h1>
-                <p className={cn('text-base sm:text-lg', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                  AI-powered text summarization with rich formatting preservation
-                </p>
-              </div>
-            </div>
+          <div className="mb-8">
+            <Link 
+              href="/"
+              className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-indigo-300' : 'text-slate-500 hover:text-indigo-600')}
+            >
+              <ArrowLeft size={16} className="mr-2" />
+              Back to Hub
+            </Link>
+            <Header
+              title="Summarizer"
+              description="AI-powered text summarization with rich formatting preservation"
+              accent="blue"
+              isDark={isDark}
+              icon={<FileText className="w-8 h-8" />}
+            />
           </div>
-        </div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -185,7 +151,7 @@ export default function SummarizerPage() {
             {isLoading && (
               <div className={cn('rounded-2xl p-4 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-slate-200')}>
                 <div className="flex items-center gap-3 text-sm">
-                  <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  <LoadingSpinner size={20} thickness={2} colorClassName="border-blue-500" />
                   <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Processing your text...</span>
                 </div>
               </div>
@@ -243,20 +209,7 @@ export default function SummarizerPage() {
         </div>
       </div>
 
-      {/* Theme Toggle */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={toggleTheme}
-          className={cn(
-            'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
-            isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-          )}
-          aria-label="Toggle dark mode"
-        >
-          <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-          <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-        </button>
-      </div>
+        <ThemeToggle />
       </div>
     </ErrorBoundary>
   );

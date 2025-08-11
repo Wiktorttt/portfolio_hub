@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
+import LoadingSpinner from './LoadingSpinner';
 
 interface WebhookButtonProps {
   webhookName: string;
@@ -85,7 +86,7 @@ export default function WebhookButton({
     >
       {isLoading ? (
         <div className="flex items-center space-x-2">
-          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          <LoadingSpinner size={16} thickness={2} className="text-white" colorClassName="border-white" />
           <span>Processing...</span>
         </div>
       ) : (

@@ -46,22 +46,10 @@ export default function RichEditor({ value, onChange, placeholder = "Enter your 
   };
 
   const formatText = (command: string, value?: string) => {
-    // Use modern selection API instead of deprecated execCommand
+    // Fallback to execCommand for basic formatting in a controlled context
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
-      switch (command) {
-        case 'bold':
-          document.execCommand('bold', false);
-          break;
-        case 'italic':
-          document.execCommand('italic', false);
-          break;
-        case 'underline':
-          document.execCommand('underline', false);
-          break;
-        default:
-          document.execCommand(command, false, value);
-      }
+      document.execCommand(command, false, value);
     }
     editorRef.current?.focus();
     handleInput();

@@ -3,8 +3,12 @@
 import { useEffect, useState, KeyboardEvent } from 'react';
 import Link from 'next/link';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Header from '@/components/Header';
+import ThemeToggle from '@/components/ThemeToggle';
 import { ArrowLeft, ChefHat, Search, Utensils, Clock, Globe, Shuffle, X, Users } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
 
 // Cuisine options
 const CUISINE_OPTIONS = [
@@ -36,7 +40,7 @@ export default function RecipeRecommenderPage() {
   const [randomCuisine, setRandomCuisine] = useState('Any');
   const [dietaryRandom, setDietaryRandom] = useState<string[]>([]);
   const [recipeCount, setRecipeCount] = useState(3);
-  const [isDark, setIsDark] = useState(false);
+  const { isDark } = useTheme();
   const [dietaryRandomInput, setDietaryRandomInput] = useState('');
 
   // legacy toggles removed (chips UI instead)
@@ -65,30 +69,7 @@ export default function RecipeRecommenderPage() {
     console.log('Random Recipe:', { randomCuisine, dietary_restrictions: dietaryRandom, recipeCount });
   };
 
-  // Sync theme from cookie
-  useEffect(() => {
-    try {
-      const cookie = document.cookie.split('; ').find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {}
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  };
+  // Theme handled by useTheme hook
 
   // Map textarea to ingredients array (comma-separated)
   const ingredientsText = ingredients.join(', ');
@@ -139,22 +120,13 @@ export default function RecipeRecommenderPage() {
               <ArrowLeft size={16} className="mr-2" />
               Back to Hub
             </Link>
-            
-            <div className={cn('relative overflow-hidden rounded-2xl p-6 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-orange-50 ring-orange-100')}>
-              <div className="relative flex items-center gap-4">
-                <div className="h-16 w-16 rounded-xl bg-orange-500 flex items-center justify-center">
-                  <ChefHat className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className={cn('text-3xl sm:text-4xl font-bold mb-1', isDark ? 'text-slate-100' : 'text-slate-900')}>
-                    Recipe Recommender
-                  </h1>
-                  <p className={cn('text-base sm:text-lg', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                    Find recipes based on ingredients and preferences
-                  </p>
-                </div>
-              </div>
-            </div>
+            <Header
+              title="Recipe Recommender"
+              description="Find recipes based on ingredients and preferences"
+              accent="orange"
+              isDark={isDark}
+              icon={<ChefHat className="w-8 h-8" />}
+            />
           </div>
 
           {/* Main Content - single form card inspired by image */}
@@ -376,17 +348,7 @@ export default function RecipeRecommenderPage() {
             </div>
           </div>
         </div>
-        {/* Theme Toggle */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={toggleTheme}
-            className={cn('flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm', isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50')}
-            aria-label="Toggle dark mode"
-          >
-            <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-            <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-          </button>
-        </div>
+        <ThemeToggle />
       </div>
     </ErrorBoundary>
   );

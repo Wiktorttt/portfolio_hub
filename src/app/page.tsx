@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
   FileText,
   Lightbulb,
@@ -13,12 +14,14 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
+import { STATUS_POLL_INTERVAL_MS } from '@/lib/config';
 
 export default function Home() {
   const [n8nStatus, setN8nStatus] = useState<string>('Checking...');
   const [isServerDown, setIsServerDown] = useState<boolean>(false);
   const [testMode, setTestMode] = useState<boolean>(false);
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const { isDark } = useTheme();
 
   const truncateDescription = (text: string, max = 70) =>
     text.length > max ? `${text.slice(0, max - 1)}…` : text;
@@ -68,18 +71,19 @@ export default function Home() {
   const checkN8nStatus = async () => {
     try {
       const response = await api.post('/api/webhook/status', {});
-      const data = response.data;
-      
+      const data = response.data as any;
 
-      
-      if (data.code === 201) {
+      const code: number | undefined = typeof data?.code === 'string' ? parseInt(data.code, 10) : data?.code;
+      const statusText: string = (data?.status ?? '').toString();
+
+      if (code === 201 || statusText.toLowerCase() === 'connected') {
         setN8nStatus('Connected');
         setIsServerDown(false);
-      } else if (data.code === 503) {
+      } else if (code === 503 || statusText.toLowerCase().includes('down')) {
         setN8nStatus('Server down');
         setIsServerDown(true);
       } else {
-        setN8nStatus(data.status || 'Unknown Status');
+        setN8nStatus(statusText || 'Unknown Status');
         setIsServerDown(true);
       }
     } catch (error: unknown) {
@@ -103,46 +107,19 @@ export default function Home() {
     // Initial check
     checkN8nStatus();
     
-    // Set up interval for every 10 seconds
-    const interval = setInterval(checkN8nStatus, 10000);
+    // Set up interval with backoff when down
+    const interval = setInterval(
+      checkN8nStatus,
+      isServerDown ? STATUS_POLL_INTERVAL_MS.down : STATUS_POLL_INTERVAL_MS.connected
+    );
     
     // Cleanup interval on component unmount
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [isServerDown]);
 
-  // Restore theme from cookie on mount
-  useEffect(() => {
-    try {
-      const cookie = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {
-      // ignore cookie parsing errors
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+  // Theme handled by useTheme hook
 
   // Keep component responsive to server status only; no animated background on the new design
 
@@ -172,19 +149,7 @@ export default function Home() {
         </div>
 
         {/* Theme Toggle */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={toggleTheme}
-            className={cn(
-              'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
-              isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            )}
-            aria-label="Toggle dark mode"
-          >
-            <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-            <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-          </button>
-        </div>
+        <ThemeToggle />
 
         <div className="max-w-7xl mx-auto px-6 py-14">
           {/* Header */}

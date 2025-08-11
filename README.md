@@ -38,9 +38,6 @@ A modern web application showcasing various AI-powered tools and utilities in a 
 - Optimized performance and loading times
 - Secure environment variable management
 
-## 🚀 Live Demo
-
-[View Live Project](https://your-deployment-url.com)
 
 ## 🛠️ Built With
 
@@ -49,12 +46,10 @@ A modern web application showcasing various AI-powered tools and utilities in a 
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **N8N** - Workflow automation for AI integrations
+- **Cursor AI** - AI-powered code editor designed to enhance developer productivity
 
-## 📱 Screenshots
 
-*[Screenshots would be added here]*
-
-## 🎨 Design Philosophy
+## 🎨 Design
 
 This project emphasizes:
 - **Simplicity**: Clean, uncluttered interfaces
@@ -64,9 +59,9 @@ This project emphasizes:
 
 ## 🔗 Connect With Me
 
-- **Portfolio**: [Your Portfolio URL]
-- **LinkedIn**: [Your LinkedIn]
-- **GitHub**: [Your GitHub Profile]
+- **Portfolio**: WIP
+- **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/wiktor-siemi%C5%84ski-6b676b29a/)
+- **GitHub**: [GitHub](https://github.com/Wiktorttt/)
 
 ## 📄 License
 

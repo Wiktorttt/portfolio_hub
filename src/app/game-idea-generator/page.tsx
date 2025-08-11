@@ -3,14 +3,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Header from '@/components/Header';
+import ThemeToggle from '@/components/ThemeToggle';
 import WebhookButton from '@/components/WebhookButton';
 import RichEditor from '@/components/RichEditor';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
 import { ArrowLeft, Gamepad2, Palette, Rocket } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { GameIdeaItem, GameIdeaGeneratorResponse } from '@/lib/webhook_config';
 
 export default function GameIdeaGeneratorPage() {
-  const [isDark, setIsDark] = useState(false);
+  const { isDark } = useTheme();
 
   // Inputs
   const [genre, setGenre] = useState('RPG');
@@ -28,30 +32,7 @@ export default function GameIdeaGeneratorPage() {
   const [idea, setIdea] = useState<GameIdeaItem | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sync theme with cookie (consistent with other pages)
-  useEffect(() => {
-    try {
-      const cookie = document.cookie.split('; ').find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {}
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  };
+  // Theme handled by useTheme hook
 
   const platforms = ['Mobile', 'Console', 'PC', 'Web'] as const;
   const genres = [
@@ -187,22 +168,13 @@ export default function GameIdeaGeneratorPage() {
               <ArrowLeft size={16} className="mr-2" />
               Back to Hub
             </Link>
-
-            <div className={cn('relative overflow-hidden rounded-2xl p-6 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-indigo-50 ring-indigo-100')}>
-              <div className="relative flex items-center gap-4">
-                <div className="h-16 w-16 rounded-xl bg-indigo-600 flex items-center justify-center">
-                  <Gamepad2 className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className={cn('text-3xl sm:text-4xl font-bold mb-1', isDark ? 'text-slate-100' : 'text-slate-900')}>
-                    Game Idea Generator
-                  </h1>
-                  <p className={cn('text-base sm:text-lg', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                    Generate original game concepts including mechanics, themes, monetization, and platform strategy
-                  </p>
-                </div>
-              </div>
-            </div>
+            <Header
+              title="Game Idea Generator"
+              description="Generate original game concepts including mechanics, themes, monetization, and platform strategy"
+              accent="indigo"
+              isDark={isDark}
+              icon={<Gamepad2 className="w-8 h-8" />}
+            />
           </div>
 
           {/* Main Content */}
@@ -372,7 +344,7 @@ export default function GameIdeaGeneratorPage() {
 
                 {isLoading ? (
                   <div className="flex-1 flex items-center justify-center gap-3">
-                    <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                    <LoadingSpinner size={24} thickness={2} colorClassName="border-indigo-500" />
                     <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generating game concepts...</span>
                   </div>
                 ) : !idea ? (
@@ -431,20 +403,7 @@ export default function GameIdeaGeneratorPage() {
           </div>
         </div>
 
-        {/* Theme Toggle */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={toggleTheme}
-            className={cn(
-              'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
-              isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            )}
-            aria-label="Toggle dark mode"
-          >
-            <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-            <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-          </button>
-        </div>
+        <ThemeToggle />
       </div>
     </ErrorBoundary>
   );

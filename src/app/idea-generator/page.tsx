@@ -5,9 +5,13 @@ import Link from 'next/link';
 import RichEditor from '@/components/RichEditor';
 import WebhookButton from '@/components/WebhookButton';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import Header from '@/components/Header';
+import ThemeToggle from '@/components/ThemeToggle';
 import { ArrowLeft, Lightbulb, DollarSign, Clock, Sparkles, Target, Brain, Rocket } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { IdeaItem, IdeaGeneratorResponse } from '@/lib/webhook_config';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
 
 // Function to format time from seconds to human readable format
 const formatTime = (seconds: number): string => {
@@ -36,32 +40,9 @@ export default function IdeaGeneratorPage() {
   const [ideas, setIdeas] = useState<IdeaItem[]>([]);
   const [selectedIdea, setSelectedIdea] = useState<IdeaItem | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const { isDark } = useTheme();
 
-  // Sync theme from cookie
-  useEffect(() => {
-    try {
-      const cookie = document.cookie.split('; ').find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {}
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  };
+  // Theme handled by useTheme hook
 
   // Function to generate random color
   const generateRandomColor = (index: number): string => {
@@ -168,22 +149,13 @@ export default function IdeaGeneratorPage() {
               <ArrowLeft size={16} className="mr-2" />
               Back to Hub
             </Link>
-            
-            <div className={cn('relative overflow-hidden rounded-2xl p-6 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-violet-50 ring-violet-100')}>
-              <div className="relative flex items-center gap-4">
-                <div className="h-16 w-16 rounded-xl bg-violet-600 flex items-center justify-center">
-                  <Lightbulb className="w-8 h-8 text-white" />
-                </div>
-                <div>
-                  <h1 className={cn('text-3xl sm:text-4xl font-bold mb-1', isDark ? 'text-slate-100' : 'text-slate-900')}>
-                    Idea Generator
-                  </h1>
-                  <p className={cn('text-base sm:text-lg', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                    Generate creative ideas and solutions with AI assistance
-                  </p>
-                </div>
-              </div>
-            </div>
+            <Header
+              title="Idea Generator"
+              description="Generate creative ideas and solutions with AI assistance"
+              accent="violet"
+              isDark={isDark}
+              icon={<Lightbulb className="w-8 h-8" />}
+            />
           </div>
 
           {/* Main Content */}
@@ -269,7 +241,7 @@ export default function IdeaGeneratorPage() {
 
                 {isLoading ? (
                   <div className="flex-1 flex items-center justify-center gap-3">
-                    <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+                    <LoadingSpinner size={24} thickness={2} colorClassName="border-violet-500" />
                     <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generating creative ideas...</span>
                   </div>
                 ) : ideas.length === 0 ? (
@@ -362,20 +334,7 @@ export default function IdeaGeneratorPage() {
           </div>
         </div>
 
-        {/* Theme Toggle */}
-        <div className="fixed bottom-4 right-4 z-50">
-          <button
-            onClick={toggleTheme}
-            className={cn(
-              'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
-              isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-            )}
-            aria-label="Toggle dark mode"
-          >
-            <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-            <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-          </button>
-        </div>
+        <ThemeToggle />
       </div>
     </ErrorBoundary>
   );

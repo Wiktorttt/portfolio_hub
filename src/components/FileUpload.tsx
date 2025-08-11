@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { X, Upload, FileText, Image, FileSpreadsheet } from 'lucide-react';
 import { FileAttachment } from '@/lib/webhook_config';
+import { FILE_UPLOAD_DEFAULTS } from '@/lib/config';
 
 interface FileUploadProps {
   onFilesChange: (files: FileAttachment[]) => void;
@@ -48,9 +49,9 @@ const FILE_TYPE_ICONS: Record<string, React.ReactNode> = {
 
 export default function FileUpload({
   onFilesChange,
-  maxFiles = 3,
-  maxFileSize = 8 * 1024 * 1024, // 8MB
-  maxTotalSize = 24 * 1024 * 1024, // 24MB
+  maxFiles = FILE_UPLOAD_DEFAULTS.maxFiles,
+  maxFileSize = FILE_UPLOAD_DEFAULTS.maxFileSizeBytes,
+  maxTotalSize = FILE_UPLOAD_DEFAULTS.maxTotalSizeBytes,
   acceptedTypes = DEFAULT_ACCEPTED_TYPES
 }: FileUploadProps) {
   const [files, setFiles] = useState<FileAttachment[]>([]);

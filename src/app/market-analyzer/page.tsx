@@ -3,9 +3,13 @@
 import Link from 'next/link';
 import { useEffect, useState, KeyboardEvent } from 'react';
 import { ArrowLeft, Globe2, X, MapPin, Building2, BarChart3, Search, MessageSquare, Zap } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import WebhookButton from '@/components/WebhookButton';
+import Header from '@/components/Header';
+import ThemeToggle from '@/components/ThemeToggle';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import useTheme from '@/lib/useTheme';
 
 interface MarketAnalysis {
   id: string;
@@ -33,32 +37,9 @@ export default function MarketAnalyzer() {
   const [hasResults, setHasResults] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<MarketAnalysis[]>([]);
   const [expandedAnalysis, setExpandedAnalysis] = useState<string | null>(null);
-  const [isDark, setIsDark] = useState(false);
+  const { isDark } = useTheme();
 
-  // Sync theme with cookie
-  useEffect(() => {
-    try {
-      const cookie = document.cookie.split('; ').find((row) => row.startsWith('theme='));
-      const value = cookie?.split('=')[1];
-      if (value === 'dark') {
-        setIsDark(true);
-        document.documentElement.classList.add('dark');
-      } else if (value === 'light') {
-        setIsDark(false);
-        document.documentElement.classList.remove('dark');
-      }
-    } catch {}
-  }, []);
-
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    const expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
-    document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
-    if (next) document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-  };
+  // Theme handled by useTheme hook
 
   // Function to generate random color
   const generateRandomColor = (index: number): string => {
@@ -159,31 +140,22 @@ export default function MarketAnalyzer() {
     <div className={cn('min-h-screen', isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-900')}>
       <div className="max-w-6xl mx-auto p-6 sm:p-8">
         {/* Header */}
-        <div className="mb-8">
-          <Link 
-            href="/"
-            className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-cyan-300' : 'text-slate-500 hover:text-cyan-600')}
-          >
-            <ArrowLeft size={16} className="mr-2" />
-            Back to Hub
-          </Link>
-          
-          <div className={cn('relative overflow-hidden rounded-2xl p-6 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-cyan-50 ring-cyan-100')}>
-            <div className="relative flex items-center gap-4">
-              <div className="h-16 w-16 rounded-xl bg-cyan-600 flex items-center justify-center">
-                <Globe2 className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className={cn('text-3xl sm:text-4xl font-bold mb-1', isDark ? 'text-slate-100' : 'text-slate-900')}>
-                  Market Analyzer
-                </h1>
-                <p className={cn('text-base sm:text-lg', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                  Find market weaknesses and opportunities for new business ideas
-                </p>
-              </div>
-            </div>
+          <div className="mb-8">
+            <Link 
+              href="/"
+              className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-cyan-300' : 'text-slate-500 hover:text-cyan-600')}
+            >
+              <ArrowLeft size={16} className="mr-2" />
+              Back to Hub
+            </Link>
+            <Header
+              title="Market Analyzer"
+              description="Find market weaknesses and opportunities for new business ideas"
+              accent="cyan"
+              isDark={isDark}
+              icon={<Globe2 className="w-8 h-8" />}
+            />
           </div>
-        </div>
 
         {/* Main Content - single column grouped sections for better flow */}
         <div className="space-y-6">
@@ -481,7 +453,7 @@ export default function MarketAnalyzer() {
         {isAnalyzing && (
           <div className={cn('rounded-2xl p-8 shadow-sm ring-1 mt-6', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-slate-200')}>
             <div className="flex items-center justify-center gap-4">
-              <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+              <LoadingSpinner size={24} thickness={2} colorClassName="border-cyan-500" />
               <span className={cn('text-lg', isDark ? 'text-slate-300' : 'text-slate-700')}>Analyzing market data...</span>
             </div>
           </div>
@@ -614,20 +586,7 @@ export default function MarketAnalyzer() {
         )}
       </div>
 
-      {/* Theme Toggle */}
-      <div className="fixed bottom-4 right-4 z-50">
-        <button
-          onClick={toggleTheme}
-          className={cn(
-            'flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-300 shadow-sm',
-            isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-          )}
-          aria-label="Toggle dark mode"
-        >
-          <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
-          <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
-        </button>
-      </div>
+      <ThemeToggle />
     </div>
   );
 }

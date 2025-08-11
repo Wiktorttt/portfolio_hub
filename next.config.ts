@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   },
   
   // Disable webpack caching
-  webpack: (config, { dev, isServer }) => {
+  webpack: (config, { dev }) => {
     if (dev) {
       config.cache = false;
     }
