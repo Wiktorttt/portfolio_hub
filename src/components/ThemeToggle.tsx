@@ -18,7 +18,7 @@ export default function ThemeToggle({ position = 'fixed-bottom-right' }: ThemeTo
       )}
       aria-label="Toggle dark mode"
     >
-      <span className="text-sm font-medium">{isDark ? 'Dark' : 'Light'}</span>
+      <span className="text-sm font-medium">{isDark ? 'Ciemny' : 'Jasny'}</span>
       <div className={cn('w-3 h-3 rounded-full', isDark ? 'bg-indigo-500' : 'bg-yellow-400')} />
     </button>
   );

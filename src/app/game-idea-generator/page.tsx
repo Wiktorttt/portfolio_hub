@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import Header from '@/components/Header';
@@ -80,7 +80,7 @@ export default function GameIdeaGeneratorPage() {
       if (Array.isArray(data)) {
         // Could be an array of objects or [{ output: [...] }]
         const first = data[0] as { output?: unknown } | GameIdeaItem | undefined;
-        if (first && typeof first === 'object' && 'output' in (first as any)) {
+        if (first && typeof first === 'object' && 'output' in (first as Record<string, unknown>)) {
           const output = (first as { output?: unknown }).output;
           if (Array.isArray(output) && output.length > 0) single = output[0] as GameIdeaItem;
         } else if (first && typeof first === 'object') {
@@ -89,10 +89,10 @@ export default function GameIdeaGeneratorPage() {
         }
       } else if (typeof data === 'object' && data !== null) {
         const r = data as GameIdeaGeneratorResponse | GameIdeaItem;
-        if ('ideas' in (r as any) && Array.isArray((r as any).ideas)) single = (r as any).ideas[0] || null;
-        else if ('result' in (r as any) && Array.isArray((r as any).result)) single = (r as any).result[0] || null;
-        else if ('output' in (r as any)) {
-          const out = (r as any).output as unknown;
+        if ('ideas' in (r as Record<string, unknown>) && Array.isArray((r as GameIdeaGeneratorResponse).ideas)) single = (r as GameIdeaGeneratorResponse).ideas![0] || null;
+        else if ('result' in (r as Record<string, unknown>) && Array.isArray((r as GameIdeaGeneratorResponse).result)) single = (r as GameIdeaGeneratorResponse).result![0] || null;
+        else if ('output' in (r as Record<string, unknown>)) {
+          const out = (r as GameIdeaGeneratorResponse).output as unknown;
           if (Array.isArray(out)) single = (out as GameIdeaItem[])[0] || null;
           else if (out && typeof out === 'object') {
             const maybe = out as { sanitized?: string; text?: string };
@@ -166,11 +166,11 @@ export default function GameIdeaGeneratorPage() {
               className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-indigo-300' : 'text-slate-500 hover:text-indigo-600')}
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Hub
+              Powrót do Hub
             </Link>
             <Header
-              title="Game Idea Generator"
-              description="Generate original game concepts including mechanics, themes, monetization, and platform strategy"
+              title="Generator Pomysłów Dla Gier"
+              description="Stwórz pomysł na bazie gatunku, designu, motywów oraz historii"
               accent="indigo"
               isDark={isDark}
               icon={<Gamepad2 className="w-8 h-8" />}
@@ -187,7 +187,7 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Palette className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Genre</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Gatunek</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {genres.map((g) => (
@@ -208,7 +208,7 @@ export default function GameIdeaGeneratorPage() {
                 {genre === 'Custom' && (
                   <input
                     className={cn('mt-3 w-full px-3 py-2 rounded-lg border text-sm', isDark ? 'bg-slate-950 border-slate-700 text-slate-200 placeholder-slate-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400')}
-                    placeholder="Describe your custom genre (e.g., Mix of RPG and Strategy)"
+                    placeholder="Opisz swój niestandardowy gatunek (np. Mix RPG i Strategii)"
                     value={customGenre}
                     onChange={(e) => setCustomGenre(e.target.value)}
                   />
@@ -221,7 +221,7 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Gamepad2 className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Platform</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Platforma</h2>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {platforms.map((p) => {
@@ -250,7 +250,7 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Gamepad2 className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Target Audience</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Grupa Docelowa</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <select
@@ -258,7 +258,7 @@ export default function GameIdeaGeneratorPage() {
                     value={audienceAge}
                     onChange={(e) => setAudienceAge(e.target.value)}
                   >
-                    {['Kids (6-12)', 'Teens (13-17)', 'Adults (18-34)', 'Adults (35+)', 'All Ages'].map((a) => (
+                    {['Dzieci (6-12)', 'Nastolatki (13-17)', 'Dorośli (18-34)', 'Dorośli (35+)', 'Wszystkie Wieki'].map((a) => (
                       <option key={a} value={a}>{a}</option>
                     ))}
                   </select>
@@ -267,7 +267,7 @@ export default function GameIdeaGeneratorPage() {
                     value={audienceSkill}
                     onChange={(e) => setAudienceSkill(e.target.value)}
                   >
-                    {['Casual', 'Hardcore'].map((a) => (
+                    {['Casualowy', 'Hardcore'].map((a) => (
                       <option key={a} value={a}>{a}</option>
                     ))}
                   </select>
@@ -276,7 +276,7 @@ export default function GameIdeaGeneratorPage() {
                     value={playstyle}
                     onChange={(e) => setPlaystyle(e.target.value)}
                   >
-                    {['Solo', 'Cooperative', 'Competitive'].map((a) => (
+                    {['Solo', 'Kooperacyjny', 'Konkurencyjny'].map((a) => (
                       <option key={a} value={a}>{a}</option>
                     ))}
                   </select>
@@ -289,7 +289,7 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Palette className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Art & Monetization</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Sztuka i Monetyzacja</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <select
@@ -319,12 +319,12 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Palette className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Themes / Story (optional)</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Motywy / Historia (opcjonalne)</h2>
                 </div>
                 <RichEditor 
                   value={themes}
                   onChange={setThemes}
-                  placeholder="Optional: key themes, tone, worldbuilding, narrative beats, references..."
+                  placeholder="Opcjonalne: kluczowe motywy, ton, budowanie świata, elementy narracyjne, referencje..."
                   forceLight={!isDark}
                 />
               </div>
@@ -339,19 +339,19 @@ export default function GameIdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-indigo-600 flex items-center justify-center">
                     <Gamepad2 className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Idea</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Pomysł</h2>
                 </div>
 
                 {isLoading ? (
                   <div className="flex-1 flex items-center justify-center gap-3">
                     <LoadingSpinner size={24} thickness={2} colorClassName="border-indigo-500" />
-                    <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generating game concepts...</span>
+                    <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generowanie koncepcji gier...</span>
                   </div>
                 ) : !idea ? (
                   <div className={cn('flex-1 border-2 border-dashed rounded-xl flex items-center justify-center text-center p-8', isDark ? 'border-slate-700' : 'border-indigo-200')}>
                     <div>
                       <Gamepad2 className={cn('mx-auto mb-3', isDark ? 'text-slate-400' : 'text-indigo-500')} />
-                      <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Your generated game idea will appear here</p>
+                      <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Tutaj pojawi się wygenerowany pomysł na grę</p>
                     </div>
                   </div>
                 ) : (
@@ -361,19 +361,19 @@ export default function GameIdeaGeneratorPage() {
                     </div>
                     <div className="mt-4 pt-4 border-t" style={{ borderColor: isDark ? '#334155' : '#e2e8f0' }}>
                       <div className="space-y-4">
-                        <Section title="Core Gameplay Loop">{idea.core_loop || 'N/A'}</Section>
-                        <Section title="Primary Mechanics">{renderMaybeList(idea.primary_mechanics)}</Section>
+                        <Section title="Główna Pętla Rozgrywki">{idea.core_loop || 'N/A'}</Section>
+                        <Section title="Główne Mechaniki">{renderMaybeList(idea.primary_mechanics)}</Section>
                         {idea.secondary_mechanics && (
-                          <Section title="Secondary Mechanics">{renderMaybeList(idea.secondary_mechanics)}</Section>
+                          <Section title="Dodatkowe Mechaniki">{renderMaybeList(idea.secondary_mechanics)}</Section>
                         )}
                         {idea.story_premise && (
-                          <Section title="Story Premise">{idea.story_premise}</Section>
+                          <Section title="Założenia Fabularne">{idea.story_premise}</Section>
                         )}
                         {idea.level_examples && (
-                          <Section title="Level / Mission Examples">{renderMaybeList(idea.level_examples)}</Section>
+                          <Section title="Przykłady Poziomów / Misji">{renderMaybeList(idea.level_examples)}</Section>
                         )}
-                        <Section title="Progression & Rewards">{idea.progression_rewards}</Section>
-                        <Section title="Monetization Strategy">{idea.monetization_strategy}</Section>
+                        <Section title="Progresja i Nagrody">{idea.progression_rewards}</Section>
+                        <Section title="Strategia Monetyzacji">{idea.monetization_strategy}</Section>
                       </div>
                     </div>
                   </div>
@@ -394,7 +394,7 @@ export default function GameIdeaGeneratorPage() {
                       disabled={!canSubmit}
                     >
                       <Rocket className="w-5 h-5 mr-2" />
-                      Generate Game Concept
+                      Wygeneruj Koncept Gry
                     </WebhookButton>
                   </div>
                 </div>

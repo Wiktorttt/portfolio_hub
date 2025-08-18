@@ -38,13 +38,13 @@ export default function WebhookButton({
     try {
       const response = await api.post(`/api/webhook/${webhookName}`, payload);
 
-      toast.success('Request completed successfully!');
+      toast.success('Żądanie zakończone pomyślnie!');
       onSuccess?.(response.data);
     } catch (error: unknown) {
       console.error('Webhook error:', error);
       
       // More robust error handling
-      let errorMessage = 'An error occurred while processing your request';
+      let errorMessage = 'Wystąpił błąd podczas przetwarzania Twojego żądania';
       
       if (error && typeof error === 'object') {
         if ('response' in error && error.response && typeof error.response === 'object') {
@@ -55,7 +55,7 @@ export default function WebhookButton({
             } else if ('error' in response.data && response.data.error) {
               errorMessage = response.data.error;
             } else if (response.status) {
-              errorMessage = `Server error: ${response.status}`;
+              errorMessage = `Błąd serwera: ${response.status}`;
             }
           }
         } else if ('message' in error && typeof error.message === 'string') {
@@ -87,7 +87,7 @@ export default function WebhookButton({
       {isLoading ? (
         <div className="flex items-center space-x-2">
           <LoadingSpinner size={16} thickness={2} className="text-white" colorClassName="border-white" />
-          <span>Processing...</span>
+          <span>Przetwarzanie...</span>
         </div>
       ) : (
         children

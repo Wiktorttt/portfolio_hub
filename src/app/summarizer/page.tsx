@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import RichEditor from '@/components/RichEditor';
 import WebhookButton from '@/components/WebhookButton';
@@ -90,11 +90,11 @@ export default function SummarizerPage() {
               className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-indigo-300' : 'text-slate-500 hover:text-indigo-600')}
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Hub
+              Powrót do Hub
             </Link>
             <Header
-              title="Summarizer"
-              description="AI-powered text summarization with rich formatting preservation"
+              title="Sumaryzator Tekstów"
+              description="Przekształć długie treści w praktyczne podsumowania"
               accent="blue"
               isDark={isDark}
               icon={<FileText className="w-8 h-8" />}
@@ -112,12 +112,12 @@ export default function SummarizerPage() {
                   <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
                     <BookOpen className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Input Text</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Tekst Wejściowy</h2>
                 </div>
                 <RichEditor 
                   value={content}
                   onChange={setContent}
-                  placeholder="Paste or type your article, document, or any text you'd like to summarize..."
+                  placeholder="Wklej lub wpisz swój artykuł, dokument lub dowolny tekst, który chcesz streścić..."
                   forceLight={!isDark}
                 />
               </div>
@@ -130,10 +130,10 @@ export default function SummarizerPage() {
                   <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
                     <Paperclip className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Attachments (Optional)</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Załączniki (Opcjonalne)</h2>
                 </div>
                 <p className={cn('text-sm mb-4', isDark ? 'text-slate-400' : 'text-slate-600')}>
-                  Upload up to 3 files to include in your summary. Supported: Images, Text Files, Spreadsheets, Code Files.
+                  Prześlij do 3 plików do uwzględnienia w podsumowaniu. Obsługiwane: Obrazy, Pliki Tekstowe, Arkusze Kalkulacyjne, Pliki Kodu.
                 </p>
                 <FileUpload 
                   onFilesChange={handleFilesChange}
@@ -152,7 +152,7 @@ export default function SummarizerPage() {
               <div className={cn('rounded-2xl p-4 shadow-sm ring-1', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-slate-200')}>
                 <div className="flex items-center gap-3 text-sm">
                   <LoadingSpinner size={20} thickness={2} colorClassName="border-blue-500" />
-                  <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Processing your text...</span>
+                  <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Przetwarzanie tekstu...</span>
                 </div>
               </div>
             )}
@@ -165,7 +165,7 @@ export default function SummarizerPage() {
                 <div className="h-10 w-10 rounded-lg bg-blue-600 flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Summary</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Podsumowanie</h2>
               </div>
               {result ? (
                 <div 
@@ -177,7 +177,7 @@ export default function SummarizerPage() {
                 <div className={cn('flex-1 border-2 border-dashed rounded-xl flex items-center justify-center text-center p-8', isDark ? 'border-slate-700' : 'border-blue-200')}>
                   <div>
                     <FileText className={cn('mx-auto mb-3', isDark ? 'text-slate-400' : 'text-blue-500')} />
-                    <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Your AI-generated summary will appear here</p>
+                    <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Tutaj pojawi się podsumowanie wygenerowane przez AI</p>
                   </div>
                 </div>
               )}
@@ -200,7 +200,7 @@ export default function SummarizerPage() {
                     disabled={!content.trim() && attachments.length === 0}
                   >
                     <Scissors className="w-5 h-5 mr-2" />
-                    Generate Summary
+                    Wygeneruj Podsumowanie
                   </WebhookButton>
                 </div>
               </div>

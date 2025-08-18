@@ -193,17 +193,17 @@ export default function FileUpload({
       >
         <Upload className="w-8 h-8 mx-auto mb-3 text-slate-400" />
         <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-          Drag and drop files here, or{' '}
+          Przeciągnij i upuść pliki tutaj, lub{' '}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
             className="text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 underline"
           >
-            browse
+            wyszukaj na komputerze
           </button>
         </p>
         <p className="text-xs text-slate-500 dark:text-slate-500">
-          Supported: Images, Text Files, Spreadsheets, Code Files (max {formatFileSize(maxFileSize)} each, {maxFiles} files total)
+        Obsługiwane: Obrazy, Pliki Tekstowe, Arkusze Kalkulacyjne, Pliki Kodu. (max {formatFileSize(maxFileSize)} każdy plik. Max {maxFiles} pliki)
         </p>
         
         <input

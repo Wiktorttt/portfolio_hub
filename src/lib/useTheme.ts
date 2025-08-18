@@ -25,6 +25,8 @@ export default function useTheme() {
       expires.setFullYear(expires.getFullYear() + 1);
       document.cookie = `theme=${next ? 'dark' : 'light'}; path=/; expires=${expires.toUTCString()}`;
       document.documentElement.classList.toggle('dark', next);
+      // Refresh the page after theme toggle
+      window.location.reload();
       return next;
     });
   }, []);

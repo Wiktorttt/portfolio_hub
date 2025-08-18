@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import RichEditor from '@/components/RichEditor';
 import WebhookButton from '@/components/WebhookButton';
@@ -147,11 +147,11 @@ export default function IdeaGeneratorPage() {
               className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-violet-300' : 'text-slate-500 hover:text-violet-600')}
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Hub
+              Powrót do Hub
             </Link>
             <Header
-              title="Idea Generator"
-              description="Generate creative ideas and solutions with AI assistance"
+              title="Generator Pomysłów"
+              description="Rozpal kreatywność dzięki sesjom burzy mózgów"
               accent="violet"
               isDark={isDark}
               icon={<Lightbulb className="w-8 h-8" />}
@@ -169,12 +169,12 @@ export default function IdeaGeneratorPage() {
                     <div className="h-10 w-10 rounded-lg bg-violet-600 flex items-center justify-center">
                       <Target className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Context</h2>
+                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Główny Kontekst</h2>
                   </div>
                   <RichEditor 
                     value={context}
                     onChange={setContext}
-                    placeholder="Describe the context for your idea generation. For example: 'A present for my friend's birthday' or 'A new business concept for a local market'..."
+                    placeholder="Opisz kontekst do generowania pomysłów. Na przykład: 'Prezent na urodziny przyjaciela' lub 'Nowa koncepcja biznesowa dla lokalnego rynku'..."
                     forceLight={!isDark}
                   />
                 </div>
@@ -187,12 +187,12 @@ export default function IdeaGeneratorPage() {
                     <div className="h-10 w-10 rounded-lg bg-violet-600 flex items-center justify-center">
                       <Brain className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>My Thoughts</h2>
+                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Dodatkowe przemyślenia (opcjonalne)</h2>
                   </div>
                   <RichEditor 
                     value={myThoughts}
                     onChange={setMyThoughts}
-                    placeholder="Share your additional thoughts, potential ideas, or specific requirements to help direct the AI more accurately..."
+                    placeholder="Podziel się swoimi dodatkowymi myślami, potencjalnymi pomysłami lub konkretnymi wymaganiami, aby lepiej nakierować AI..."
                     forceLight={!isDark}
                   />
                 </div>
@@ -205,7 +205,7 @@ export default function IdeaGeneratorPage() {
                     <div className="h-10 w-10 rounded-lg bg-violet-600 flex items-center justify-center">
                       <Sparkles className="w-5 h-5 text-white" />
                     </div>
-                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Number of Ideas</h2>
+                    <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Liczba Pomysłów</h2>
                   </div>
                   <div className="flex justify-center">
                     <div className="grid grid-cols-10 gap-2">
@@ -236,19 +236,19 @@ export default function IdeaGeneratorPage() {
                   <div className="h-10 w-10 rounded-lg bg-violet-600 flex items-center justify-center">
                     <Lightbulb className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Ideas</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Pomysły</h2>
                 </div>
 
                 {isLoading ? (
                   <div className="flex-1 flex items-center justify-center gap-3">
                     <LoadingSpinner size={24} thickness={2} colorClassName="border-violet-500" />
-                    <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generating creative ideas...</span>
+                    <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Generowanie kreatywnych pomysłów...</span>
                   </div>
                 ) : ideas.length === 0 ? (
                   <div className={cn('flex-1 border-2 border-dashed rounded-xl flex items-center justify-center text-center p-8', isDark ? 'border-slate-700' : 'border-violet-200')}>
                     <div>
                       <Lightbulb className={cn('mx-auto mb-3', isDark ? 'text-slate-400' : 'text-violet-500')} />
-                      <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Your generated ideas will appear here</p>
+                      <p className={cn(isDark ? 'text-slate-400' : 'text-slate-600')}>Twoje wygenerowane pomysły pojawią się tutaj</p>
                     </div>
                   </div>
                 ) : (
@@ -284,7 +284,7 @@ export default function IdeaGeneratorPage() {
                             <div className="mt-4 pt-4 border-t" style={{ borderColor: isDark ? '#334155' : '#e2e8f0' }}>
                               <div className="space-y-4">
                                 <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Description</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Opis</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{idea.description}</p>
                                 </div>
                                 <div className="flex items-center space-x-6">
@@ -325,7 +325,7 @@ export default function IdeaGeneratorPage() {
                       disabled={!context.trim()}
                     >
                       <Rocket className="w-5 h-5 mr-2" />
-                      Generate Ideas
+                      Wygeneruj
                     </WebhookButton>
                   </div>
                 </div>

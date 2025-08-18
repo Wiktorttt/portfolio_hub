@@ -10,12 +10,14 @@ import {
   TestTube,
   ChefHat,
   LineChart,
-  Gamepad2,
+    Gamepad2,
+    MessageSquareText,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import useTheme from '@/lib/useTheme';
 import { STATUS_POLL_INTERVAL_MS } from '@/lib/config';
+import { WebhookStatusResponse, ErrorResponse } from '@/lib/types';
 
 export default function Home() {
   const [n8nStatus, setN8nStatus] = useState<string>('Checking...');
@@ -23,43 +25,49 @@ export default function Home() {
   const [testMode, setTestMode] = useState<boolean>(false);
   const { isDark } = useTheme();
 
-  const truncateDescription = (text: string, max = 70) =>
-    text.length > max ? `${text.slice(0, max - 1)}…` : text;
+
 
   // Active tools displayed as colored cards
   const activeTools = [
     {
+      id: 'chat-gpt-2',
+      name: 'Terminal AI',
+      description: 'Plac zabaw dla szybkich odpowiedzi z wybranym modelem AI',
+      icon: MessageSquareText,
+      accent: 'indigo',
+    },
+    {
       id: 'summarizer',
-      name: 'Text Summarizer',
-      description: 'Transform lengthy content into concise, actionable summaries',
+      name: 'Sumaryzator Tekstów',
+      description: 'Przekształć długie treści w praktyczne podsumowania',
       icon: FileText,
       accent: 'blue',
     },
     {
       id: 'idea-generator',
-      name: 'Idea Generator',
-      description: 'Spark creativity with AI-powered brainstorming sessions',
+      name: 'Generator Pomysłów',
+      description: 'Rozpal kreatywność dzięki sesjom burzy mózgów',
       icon: Lightbulb,
       accent: 'violet',
     },
     {
       id: 'game-idea-generator',
-      name: 'Game Idea Generator',
-      description: 'Game concepts: mechanics, themes, monetization, platforms',
+      name: 'Generator Pomysłów Dla Gier',
+      description: 'Stwórz pomysł na bazie gatunku, designu, motywów oraz historii',
       icon: Gamepad2,
       accent: 'indigo',
     },
     {
       id: 'market-analyzer',
-      name: 'Market Analyzer',
-      description: 'Deep dive into market trends and competitive insights',
+      name: 'Analizator Rynku',
+      description: 'Analizuj trendy na rynku, słabości oraz pomysły biznesowe',
       icon: LineChart,
       accent: 'teal',
     },
     {
       id: 'recipe-recommender',
-      name: 'Recipe Recommender',
-      description: 'Discover personalized recipes based on your preferences',
+      name: 'Rekomendator Przepisów',
+      description: 'Odkryj spersonalizowane przepisy dopasowane do Twoich preferencji',
       icon: ChefHat,
       accent: 'orange',
     },
@@ -71,32 +79,32 @@ export default function Home() {
   const checkN8nStatus = async () => {
     try {
       const response = await api.post('/api/webhook/status', {});
-      const data = response.data as any;
+      const data = response.data as WebhookStatusResponse;
 
       const code: number | undefined = typeof data?.code === 'string' ? parseInt(data.code, 10) : data?.code;
       const statusText: string = (data?.status ?? '').toString();
 
       if (code === 201 || statusText.toLowerCase() === 'connected') {
-        setN8nStatus('Connected');
+        setN8nStatus('Połączony');
         setIsServerDown(false);
       } else if (code === 503 || statusText.toLowerCase().includes('down')) {
-        setN8nStatus('Server down');
+        setN8nStatus('Serwer wyłączony');
         setIsServerDown(true);
       } else {
-        setN8nStatus(statusText || 'Unknown Status');
+        setN8nStatus(statusText || 'Status nieznany');
         setIsServerDown(true);
       }
     } catch (error: unknown) {
       console.error('N8N status check failed:', error);
       
       // Check if it's a connection refused error
-      const errorObj = error as { response?: { status?: number }; code?: string; message?: string };
+      const errorObj = error as ErrorResponse;
       if (errorObj?.response?.status === 400 || errorObj?.code === 'ECONNREFUSED') {
-        setN8nStatus('Server down');
+        setN8nStatus('Serwer wyłączony');
         setIsServerDown(true);
       } else {
 
-        setN8nStatus('Server down');
+        setN8nStatus('Serwer wyłączony');
         setIsServerDown(true);
       }
     }
@@ -138,7 +146,7 @@ export default function Home() {
             )}
           >
             <TestTube size={16} />
-            <span className="text-sm font-medium">Test Mode</span>
+            <span className="text-sm font-medium">Tryb Testowy</span>
             <div
               className={cn(
                 'w-3 h-3 rounded-full transition-colors duration-300',
@@ -159,7 +167,7 @@ export default function Home() {
               <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">AI Hub</span>
             </div>
             <p className={cn('mt-4 max-w-2xl mx-auto', isDark ? 'text-slate-400' : 'text-slate-500')}>
-              Click any of the tools to start!
+              Kliknij dowolne narzędzie, aby rozpocząć!
             </p>
 
             {/* N8N Status pill */}
@@ -179,14 +187,14 @@ export default function Home() {
                     n8nStatus !== 'Connected' && n8nStatus !== 'Server down' && 'bg-orange-500'
                   )}
                 />
-                <span className="font-medium">N8N Status:</span>
+                <span className="font-medium">Status N8N:</span>
                 <span className="font-semibold">{n8nStatus}</span>
               </div>
             </div>
           </div>
 
           {/* Active tools */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {activeTools.map(({ id, name, description, icon: Icon, accent }) => {
               const isDisabled = isServerDown && !testMode;
               const colors = {
@@ -214,23 +222,23 @@ export default function Home() {
               const Card = (
                 <div
                   className={cn(
-                    'group relative rounded-2xl p-5 shadow-sm ring-1 transition-all',
+                    'group relative rounded-2xl p-6 shadow-sm ring-1 transition-all min-h-[200px] flex flex-col',
                     colors[accent],
                     isDisabled && 'opacity-60 cursor-not-allowed'
                   )}
                   aria-disabled={isDisabled}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={cn('h-14 w-14 aspect-square shrink-0 rounded-xl flex items-center justify-center', iconBg[accent])}>
-                      <Icon size={26} className="text-white" />
+                  <div className="flex items-start gap-4 flex-1">
+                    <div className={cn('h-16 w-16 aspect-square shrink-0 rounded-xl flex items-center justify-center', iconBg[accent])}>
+                      <Icon size={28} className="text-white" />
                     </div>
-                    <div className="min-w-0">
-                      <div className={cn('font-semibold truncate', isDark ? 'text-slate-100' : 'text-slate-900')}>{name}</div>
-                      <div className={cn('text-sm', isDark ? 'text-slate-400' : 'text-slate-600')}>{truncateDescription(description)}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className={cn('font-semibold text-lg leading-tight mb-2', isDark ? 'text-slate-100' : 'text-slate-900')}>{name}</div>
+                      <div className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{description}</div>
                     </div>
                   </div>
-                  <div className="mt-6 flex items-center justify-between text-xs text-slate-500">
-                    <span className="font-medium">ACTIVE</span>
+                  <div className="mt-auto pt-4 flex items-center justify-between text-xs text-slate-500">
+                    <span className="font-medium">AKTYWNE</span>
                     <span className={cn('inline-block h-2 w-2 rounded-full', dot[accent])} />
                   </div>
                 </div>
@@ -250,7 +258,7 @@ export default function Home() {
 
           {/* Footer */}
           <div className={cn('mt-10 text-center text-sm', isDark ? 'text-slate-500' : 'text-slate-500')}>
-            Made by <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Wiktor Siemiński</span>
+            Panel narzędzi AI wykonany przez <span className={cn(isDark ? 'text-slate-300' : 'text-slate-700')}>Wiktor Siemiński</span>
           </div>
 
         </div>

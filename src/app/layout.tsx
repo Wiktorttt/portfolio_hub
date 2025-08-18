@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Portfolio Hub",
-  description: "A clean, modern portal that hosts multiple functional sub-websites in a single interface",
+  description: "Czysty, nowoczesny portal, który obsługuje wiele funkcjonalnych podstron w jednym interfejsie",
 };
 
 export default function RootLayout({

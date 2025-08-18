@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent } from 'react';
 import { ArrowLeft, Globe2, X, MapPin, Building2, BarChart3, Search, MessageSquare, Zap } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import WebhookButton from '@/components/WebhookButton';
@@ -146,11 +146,11 @@ export default function MarketAnalyzer() {
               className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-cyan-300' : 'text-slate-500 hover:text-cyan-600')}
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Hub
+              Powrót do Hub
             </Link>
             <Header
-              title="Market Analyzer"
-              description="Find market weaknesses and opportunities for new business ideas"
+              title="Analizator Rynku"
+              description="Analizuj trendy na rynku, słabości oraz pomysły biznesowe"
               accent="cyan"
               isDark={isDark}
               icon={<Globe2 className="w-8 h-8" />}
@@ -227,7 +227,7 @@ export default function MarketAnalyzer() {
                 <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Industry</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Branża</h2>
               </div>
               <select
                 id="industry"
@@ -236,7 +236,7 @@ export default function MarketAnalyzer() {
                 className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-cyan-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-cyan-500')}
                 aria-label="Select industry for analysis"
               >
-                <option value="All">All Industries</option>
+                <option value="All">Wszystkie Branże</option>
                 <option value="Technology">Technology</option>
                 <option value="Healthcare">Healthcare</option>
                 <option value="Finance">Finance</option>
@@ -296,7 +296,7 @@ export default function MarketAnalyzer() {
                 <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Analysis Depth</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Głębokość Analizy</h2>
               </div>
               <select
                 id="analysis-depth"
@@ -305,11 +305,11 @@ export default function MarketAnalyzer() {
                 className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-cyan-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-cyan-500')}
                 aria-label="Select analysis depth level"
               >
-                <option value={1}>Quick Overview (1 market scan)</option>
-                <option value={2}>Light Analysis (2 market scans)</option>
-                <option value={3}>Standard Analysis (3 market scans)</option>
-                <option value={4}>Detailed Analysis (4 market scans)</option>
-                <option value={5}>Deep Analysis (5 market scans)</option>
+                <option value={1}>Szybki Przegląd (1 skanowanie rynku)</option>
+                <option value={2}>Lekka Analiza (2 skanowania rynku)</option>
+                <option value={3}>Standardowa Analiza (3 skanowania rynku)</option>
+                <option value={4}>Szczegółowa Analiza (4 skanowania rynku)</option>
+                <option value={5}>Głęboka Analiza (5 skanowan rynku)</option>
               </select>
             </div>
           </div>
@@ -321,7 +321,7 @@ export default function MarketAnalyzer() {
                 <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                   <Search className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Keywords</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Słowa Kluczowe</h2>
               </div>
               
               {/* Keyword Input Field */}
@@ -331,7 +331,7 @@ export default function MarketAnalyzer() {
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
                   onKeyDown={handleAddKeyword}
-                  placeholder="Type a keyword and press Enter (e.g., sustainable, local, tech support...)"
+                  placeholder="Wpisz słowo kluczowe i naciśnij Enter (np. zrównoważony, lokalny, wsparcie techniczne...)"
                   className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-cyan-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-cyan-500')}
                   aria-label="Enter keywords for market analysis"
                 />
@@ -368,14 +368,14 @@ export default function MarketAnalyzer() {
                 <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                   <MessageSquare className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>More Context (Optional)</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Więcej Kontekstu (Opcjonalne)</h2>
               </div>
               <textarea
                 id="more-context"
                 value={moreContext}
                 onChange={(e) => setMoreContext(e.target.value)}
-                placeholder="Describe what you're looking for more specifically. e.g., 'I want to find underserved markets in rural areas' or 'Focus on B2B opportunities with recurring revenue models'"
-                className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 resize-none', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-cyan-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-cyan-500')}
+                placeholder="Opisz dokładniej, czego szukasz. np. 'Chcę znaleźć niedosłużone rynki na obszarach wiejskich' lub 'Skup się na możliwościach B2B z modelami powtarzających się przychodów'"
+                className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2 resize-none', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 placeholder:text-slate-500 focus:ring-cyan-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 placeholder:text-slate-500 focus:ring-cyan-500')}
                 rows={3}
                 aria-label="Enter additional context for market analysis"
               />
@@ -389,7 +389,7 @@ export default function MarketAnalyzer() {
                 <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                   <Zap className="w-5 h-5 text-white" />
                 </div>
-                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Analysis Turbo Mode</h2>
+                <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Turbo Tryb Analizy</h2>
               </div>
               <div className={cn('flex items-center justify-between p-4 rounded-lg', isDark ? 'bg-slate-900 border border-slate-700' : 'bg-slate-50 ring-1 ring-slate-200')}>
                 <div className="flex items-center space-x-3">
@@ -399,8 +399,8 @@ export default function MarketAnalyzer() {
                     </svg>
                   </div>
                   <div>
-                    <h3 className={cn('text-sm font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Analysis Turbo Mode</h3>
-                    <p className={cn('text-xs', isDark ? 'text-slate-400' : 'text-slate-600')}>Takes longer time, but is more accurate with the results</p>
+                    <h3 className={cn('text-sm font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Turbo Tryb Analizy</h3>
+                    <p className={cn('text-xs', isDark ? 'text-slate-400' : 'text-slate-600')}>Zajmuje więcej czasu, ale jest dokładniejszy w wynikach</p>
                   </div>
                 </div>
                 <button
@@ -442,7 +442,7 @@ export default function MarketAnalyzer() {
                   disabled={keywords.length === 0}
                 >
                   <Globe2 className="w-5 h-5 mr-2" />
-                  Analyze Market
+                  Analizuj Rynek
                 </WebhookButton>
               </div>
             </div>
@@ -454,7 +454,7 @@ export default function MarketAnalyzer() {
           <div className={cn('rounded-2xl p-8 shadow-sm ring-1 mt-6', isDark ? 'bg-slate-900 ring-slate-800' : 'bg-white ring-slate-200')}>
             <div className="flex items-center justify-center gap-4">
               <LoadingSpinner size={24} thickness={2} colorClassName="border-cyan-500" />
-              <span className={cn('text-lg', isDark ? 'text-slate-300' : 'text-slate-700')}>Analyzing market data...</span>
+              <span className={cn('text-lg', isDark ? 'text-slate-300' : 'text-slate-700')}>Analizowanie danych rynkowych...</span>
             </div>
           </div>
         )}
@@ -468,7 +468,7 @@ export default function MarketAnalyzer() {
                   <div className="h-10 w-10 rounded-lg bg-cyan-600 flex items-center justify-center">
                     <BarChart3 className="w-5 h-5 text-white" />
                   </div>
-                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Market Analysis Results</h2>
+                  <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Wyniki Analizy Rynku</h2>
                 </div>
                 
                 <div className="space-y-3">
@@ -519,42 +519,42 @@ export default function MarketAnalyzer() {
                             <div className="mt-4 pt-4 border-t" style={{ borderColor: isDark ? '#334155' : '#e2e8f0' }}>
                             <div className="space-y-4">
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Gap Description</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Opis Luki</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.gapDescription}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Market Size</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Wielkość Rynku</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.marketSize}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Competitors</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Konkurenci</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.competitors}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Business Model</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Model Biznesowy</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.businessModel}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Target Customers</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Docelowi Klienci</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.targetCustomers}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Risks</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Ryzyko</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.risks}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Opportunities</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Możliwości</h4>
                                   <p className={cn('text-sm leading-relaxed', isDark ? 'text-slate-400' : 'text-slate-600')}>{analysis.opportunities}</p>
                               </div>
                               
                               <div>
-                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Reference Links</h4>
+                                  <h4 className={cn('text-sm font-semibold mb-2', isDark ? 'text-slate-300' : 'text-slate-700')}>Linki Referencyjne</h4>
                                 <div className="space-y-2">
                                   {analysis.links && analysis.links.length > 0 ? (
                                     analysis.links.map((link, linkIndex) => (
@@ -569,7 +569,7 @@ export default function MarketAnalyzer() {
                                       </a>
                                     ))
                                   ) : (
-                                      <p className={cn('text-sm italic', isDark ? 'text-slate-400' : 'text-slate-500')}>No reference links available</p>
+                                      <p className={cn('text-sm italic', isDark ? 'text-slate-400' : 'text-slate-500')}>Brak dostępnych linków referencyjnych</p>
                                   )}
                                 </div>
                               </div>

@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent } from 'react';
 import Link from 'next/link';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import Header from '@/components/Header';
 import ThemeToggle from '@/components/ThemeToggle';
 import { ArrowLeft, ChefHat, Search, Utensils, Clock, Globe, Shuffle, X, Users } from 'lucide-react';
-import LoadingSpinner from '@/components/LoadingSpinner';
+
 import { cn } from '@/lib/utils';
 import useTheme from '@/lib/useTheme';
 
@@ -19,13 +19,9 @@ const CUISINE_OPTIONS = [
 ];
 
 // Meal time options
-const MEAL_TIME_OPTIONS = ['Breakfast', 'Lunch', 'Dinner', 'Dessert'];
+const MEAL_TIME_OPTIONS = ['Śniadanie', 'Obiad', 'Kolacja', 'Deser'];
 
-// Intolerance options
-const INTOLERANCE_OPTIONS = [
-  'Dairy', 'Egg', 'Gluten', 'Grain', 'Peanut', 'Seafood', 'Sesame', 
-  'Shellfish', 'Soy', 'Sulfite', 'Tree Nut', 'Wheat'
-];
+
 
 export default function RecipeRecommenderPage() {
   // Recipe Finder state
@@ -45,19 +41,7 @@ export default function RecipeRecommenderPage() {
 
   // legacy toggles removed (chips UI instead)
 
-  const handleAddIngredient = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && ingredientInput.trim()) {
-      const newIngredient = ingredientInput.trim();
-      if (!ingredients.includes(newIngredient)) {
-        setIngredients(prev => [...prev, newIngredient]);
-        setIngredientInput('');
-      }
-    }
-  };
 
-  const handleRemoveIngredient = (ingredientToRemove: string) => {
-    setIngredients(prev => prev.filter(ingredient => ingredient !== ingredientToRemove));
-  };
 
   const handleRecipeFinder = () => {
     // TODO: Implement recipe finder webhook
@@ -118,11 +102,11 @@ export default function RecipeRecommenderPage() {
               className={cn('inline-flex items-center mb-4 transition-colors', isDark ? 'text-slate-400 hover:text-orange-300' : 'text-slate-500 hover:text-orange-600')}
             >
               <ArrowLeft size={16} className="mr-2" />
-              Back to Hub
+              Powrót do Hub
             </Link>
             <Header
-              title="Recipe Recommender"
-              description="Find recipes based on ingredients and preferences"
+              title="Rekomendator Przepisów"
+              description="Znajdź przepisy na podstawie składników i preferencji"
               accent="orange"
               isDark={isDark}
               icon={<ChefHat className="w-8 h-8" />}
@@ -135,7 +119,7 @@ export default function RecipeRecommenderPage() {
               <div className="h-10 w-10 rounded-lg bg-orange-500 flex items-center justify-center">
                 <Search className="w-5 h-5 text-white" />
               </div>
-              <h2 className={cn('text-2xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>What do you want to cook?</h2>
+              <h2 className={cn('text-2xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Co chcesz ugotować?</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -145,12 +129,12 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Utensils className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Available Ingredients *</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Dostępne Składniki *</h3>
                 </div>
                 <textarea
                   value={ingredientsText}
                   onChange={(e) => onIngredientsTextChange(e.target.value)}
-                  placeholder="e.g., chicken, tomatoes, garlic, onions, rice, spinach..."
+                  placeholder="np. kurczak, pomidory, czosnek, cebula, ryż, szpinak..."
                   className={cn('w-full min-h-[140px] px-4 py-3 rounded-lg resize-y focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-orange-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-orange-500')}
                 />
               </div>
@@ -161,7 +145,7 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Globe className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Cuisine Type</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Rodzaj Kuchni</h3>
                 </div>
                 <select
                   value={cuisine}
@@ -180,14 +164,14 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Users className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Dietary Restrictions (Optional)</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Ograniczenia Żywieniowe (Opcjonalne)</h3>
                 </div>
                 <input
                   type="text"
                   value={dietaryMainInput}
                   onChange={(e) => setDietaryMainInput(e.target.value)}
                   onKeyDown={handleAddDietaryMain}
-                  placeholder="Type a restriction and press Enter (e.g., vegetarian, vegan, gluten-free...)"
+                  placeholder="Wpisz ograniczenie i naciśnij Enter (np. wegetariański, weganski, bezglutenowy...)"
                   className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-orange-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-orange-500')}
                 />
                 {dietaryMain.length > 0 && (
@@ -216,7 +200,7 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Clock className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Meal Type</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Rodzaj Posiłku</h3>
                 </div>
                 <select
                   value={mealTime}
@@ -240,7 +224,7 @@ export default function RecipeRecommenderPage() {
                   className={cn('relative flex items-center px-6 py-3 text-white font-semibold rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed', 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700')}
                 >
                   <Search className="w-5 h-5 mr-2" />
-                  Get Recipe Recommendations
+                  Uzyskaj Rekomendacje Przepisów
                 </button>
               </div>
             </div>
@@ -252,7 +236,7 @@ export default function RecipeRecommenderPage() {
               <div className={cn('h-10 w-10 rounded-lg flex items-center justify-center', 'bg-orange-500')}>
                 <Shuffle className="w-5 h-5 text-white" />
               </div>
-              <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Get Random Recipe</h2>
+              <h2 className={cn('text-xl font-semibold', isDark ? 'text-slate-100' : 'text-slate-900')}>Uzyskaj Losowy Przepis</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -261,7 +245,7 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Globe className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Cuisine</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Kuchnia</h3>
                 </div>
                 <select
                   value={randomCuisine}
@@ -279,14 +263,14 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Users className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Dietary Restrictions</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Ograniczenia Żywieniowe</h3>
                 </div>
                 <input
                   type="text"
                   value={dietaryRandomInput}
                   onChange={(e) => setDietaryRandomInput(e.target.value)}
                   onKeyDown={handleAddDietaryRandom}
-                  placeholder="Type a restriction and press Enter (e.g., dairy-free, nut-free...)"
+                  placeholder="Wpisz ograniczenie i naciśnij Enter (np. bez nabiału, bez orzechów...)"
                   className={cn('w-full px-4 py-3 rounded-lg focus:outline-none focus:ring-2', isDark ? 'bg-slate-900 border border-slate-700 text-slate-100 focus:ring-orange-500' : 'bg-white ring-1 ring-slate-200 text-slate-900 focus:ring-orange-500')}
                 />
                 {dietaryRandom.length > 0 && (
@@ -314,7 +298,7 @@ export default function RecipeRecommenderPage() {
                   <div className="h-8 w-8 rounded-lg bg-orange-500 flex items-center justify-center">
                     <Utensils className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Number of Recipes</h3>
+                  <h3 className={cn('text-sm font-medium', isDark ? 'text-slate-300' : 'text-slate-700')}>Liczba Przepisów</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {[1, 2, 3, 4, 5].map((number) => (
@@ -342,7 +326,7 @@ export default function RecipeRecommenderPage() {
                   className={cn('relative flex items-center px-6 py-3 text-white font-semibold rounded-lg transition-all duration-300', 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700')}
                 >
                   <Shuffle className="w-5 h-5 mr-2" />
-                  Get Random Recipes
+                  Uzyskaj Losowe Przepisy
                 </button>
               </div>
             </div>

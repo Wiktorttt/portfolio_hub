@@ -76,6 +76,30 @@ export const WEBHOOK_CONFIGS = {
         
       }
     }
+  },
+  'chat-gpt-2': {
+    name: 'chat-gpt-2',
+    externalUrl: `${BASE_WEBHOOK_URL}/chat-gpt-2`,
+    headers: SHARED_HEADERS,
+    validation: {
+      requiredFields: ['model', 'message', 'uuid'],
+      fieldTypes: {
+        model: 'string',
+        message: 'string',
+        uuid: 'string'
+      }
+    }
+  },
+  'chat-gpt-2-memory': {
+    name: 'chat-gpt-2-memory',
+    externalUrl: `${BASE_WEBHOOK_URL}/chat-gpt-2-memory`,
+    headers: SHARED_HEADERS,
+    validation: {
+      requiredFields: ['uuid'],
+      fieldTypes: {
+        uuid: 'string'
+      }
+    }
   }
   // Add more webhooks here as needed
 };
@@ -174,4 +198,27 @@ export interface GameIdeaGeneratorResponse {
   ideas?: GameIdeaItem[];
   result?: GameIdeaItem[];
   output?: GameIdeaItem[] | { sanitized?: string; text?: string };
+}
+
+// Chat GPT 2.0 types
+export interface ChatGpt2Request {
+  model: string;
+  message: string;
+  uuid: string;
+}
+
+export interface ChatGpt2ResponseItem {
+  output: string;
+  total_tokens: number;
+}
+
+export interface ChatGpt2Response {
+  output: ChatGpt2ResponseItem[];
+}
+
+export type ChatGpt2MemoryResponse = ChatGpt2MemoryMessage[];
+
+export interface ChatGpt2MemoryMessage {
+  human: string;
+  ai: string;
 }
