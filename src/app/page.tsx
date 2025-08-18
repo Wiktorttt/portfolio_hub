@@ -175,16 +175,16 @@ export default function Home() {
               <div
                 className={cn(
                   'inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm ring-1',
-                  n8nStatus === 'Connected' && (isDark ? 'bg-emerald-900/30 ring-emerald-700 text-emerald-300' : 'bg-emerald-50 ring-emerald-200 text-emerald-700'),
-                  n8nStatus === 'Server down' && (isDark ? 'bg-red-900/30 ring-red-700 text-red-300' : 'bg-red-50 ring-red-200 text-red-700'),
-                  n8nStatus !== 'Connected' && n8nStatus !== 'Server down' && (isDark ? 'bg-orange-900/30 ring-orange-700 text-orange-300' : 'bg-orange-50 ring-orange-200 text-orange-700')
+                  n8nStatus === 'Połączony' && (isDark ? 'bg-emerald-900/30 ring-emerald-700 text-emerald-300' : 'bg-emerald-50 ring-emerald-200 text-emerald-700'),
+                  (n8nStatus === 'Serwer wyłączony' || n8nStatus === 'Status nieznany') && (isDark ? 'bg-red-900/30 ring-red-700 text-red-300' : 'bg-red-50 ring-red-200 text-red-700'),
+                  n8nStatus !== 'Połączony' && n8nStatus !== 'Serwer wyłączony' && n8nStatus !== 'Status nieznany' && (isDark ? 'bg-orange-900/30 ring-orange-700 text-orange-300' : 'bg-orange-50 ring-orange-200 text-orange-700')
                 )}
               >
                 <span
                   className={cn('h-2 w-2 rounded-full',
-                    n8nStatus === 'Connected' && 'bg-emerald-500',
-                    n8nStatus === 'Server down' && 'bg-red-500',
-                    n8nStatus !== 'Connected' && n8nStatus !== 'Server down' && 'bg-orange-500'
+                    n8nStatus === 'Połączony' && 'bg-emerald-500',
+                    (n8nStatus === 'Serwer wyłączony' || n8nStatus === 'Status nieznany') && 'bg-red-500',
+                    n8nStatus !== 'Połączony' && n8nStatus !== 'Serwer wyłączony' && n8nStatus !== 'Status nieznany' && 'bg-orange-500'
                   )}
                 />
                 <span className="font-medium">Status N8N:</span>
