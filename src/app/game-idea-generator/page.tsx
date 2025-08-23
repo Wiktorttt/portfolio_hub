@@ -113,13 +113,13 @@ export default function GameIdeaGeneratorPage() {
 
       setIdea(single);
     } catch (e) {
-      console.error('Parse error:', e);
+      
       setIdea(null);
     }
   };
 
   const handleError = (error: unknown) => {
-    console.error('Game Idea Generator error:', error);
+    // Handle error silently
   };
 
   const payload = useMemo(() => ({

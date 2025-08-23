@@ -60,7 +60,7 @@ export default function ChatGptTwoPage() {
 
                 const responseData = response.data as ChatGpt2MemoryResponse;
         
-        console.log('Memory response data:', JSON.stringify(responseData, null, 2));
+
         
         // Parse the memory response and convert to ChatMessage format
         if (responseData && Array.isArray(responseData) && responseData.length > 0) {
@@ -89,7 +89,6 @@ export default function ChatGptTwoPage() {
                 });
               }
             } catch (parseError) {
-              console.error('Failed to parse AI response:', parseError);
               // Fallback: add raw AI response
               parsedMessages.push({
                 id: crypto.randomUUID(),
@@ -100,11 +99,9 @@ export default function ChatGptTwoPage() {
             }
           });
           
-          console.log('Setting parsed messages:', parsedMessages);
           setMessages(parsedMessages);
         }
       } catch (error) {
-        console.error('Failed to load conversation memory:', error);
         // If webhook fails, assume it's a new chat and generate a new UUID
         clearChatUUID();
       } finally {
@@ -177,26 +174,17 @@ export default function ChatGptTwoPage() {
       let outputText = '';
       let totalTokens = 0;
       
-      // Debug logging to see the actual response structure
-      console.log('Response data:', JSON.stringify(responseData, null, 2));
-      console.log('Response data type:', typeof responseData);
+      // Handle the response structure
       
       // Handle the actual response structure: { output: [{ output: "...", total_tokens: 28 }] }
       if (responseData && typeof responseData === 'object' && responseData.output && Array.isArray(responseData.output) && responseData.output.length > 0) {
         const firstOutput = responseData.output[0];
-        console.log('First output:', firstOutput);
-        console.log('Output text:', firstOutput?.output);
-        console.log('Total tokens:', firstOutput?.total_tokens);
         
         outputText = firstOutput.output || 'No response received';
         totalTokens = firstOutput.total_tokens || 0;
       } else {
-        console.log('Failed at object structure check');
         outputText = 'No response received';
       }
-      
-      console.log('Final outputText:', outputText);
-      console.log('Final totalTokens:', totalTokens);
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -208,7 +196,6 @@ export default function ChatGptTwoPage() {
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error: unknown) {
-      console.error('Chat GPT 2.0 error:', error);
       const endTime = Date.now();
       const responseTime = (endTime - requestStartTime) / 1000;
       

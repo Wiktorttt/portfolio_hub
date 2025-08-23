@@ -100,7 +100,7 @@ export default function MarketAnalyzer() {
               analysisData = parsed.analyses;
             }
           } catch (parseError) {
-            console.error('Failed to parse sanitized output:', parseError);
+    
           }
         }
       }
@@ -112,13 +112,12 @@ export default function MarketAnalyzer() {
       setAnalysisResults(limitedResults);
       setHasResults(true);
     } catch (error) {
-      console.error('Failed to process market analysis data:', error);
+      
       toast.error('Failed to process analysis results');
     }
   };
 
   const handleError = (error: unknown) => {
-    console.error('Market analysis failed:', error);
     toast.error('Market analysis failed. Please try again.');
   };
 

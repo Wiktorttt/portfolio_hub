@@ -26,7 +26,7 @@ export async function POST(
 
     
     if (!result.success) {
-      console.error(`Webhook ${webhookName} failed:`, result.error);
+
       return NextResponse.json(
         { error: result.error },
         { status: 400 }
@@ -37,7 +37,7 @@ export async function POST(
 
   } catch (error) {
     const { webhookName } = await context.params;
-    console.error(`API route error for webhook ${webhookName}:`, error);
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -56,7 +56,7 @@ export async function GET() {
       message: 'Use POST /api/webhook/[webhookName] to execute a webhook'
     });
   } catch (error) {
-    console.error('Failed to get webhook information:', error);
+    
     return NextResponse.json(
       { error: 'Failed to get webhook information' },
       { status: 500 }

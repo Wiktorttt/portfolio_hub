@@ -69,7 +69,7 @@ export default function SummarizerPage() {
   };
 
   const handleError = (error: unknown) => {
-    console.error('Summarizer error:', error);
+    // Handle error silently
   };
 
   const handleFilesChange = (files: FileAttachment[]) => {

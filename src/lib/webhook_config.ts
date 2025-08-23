@@ -100,6 +100,52 @@ export const WEBHOOK_CONFIGS = {
         uuid: 'string'
       }
     }
+  },
+  'plan-vacation': {
+    name: 'plan-vacation',
+    externalUrl: `${BASE_WEBHOOK_URL}/plan-vacation`,
+    headers: SHARED_HEADERS,
+    validation: {
+      requiredFields: ['country', 'location_type', 'location_name', 'start', 'end', 'budget', 'vacation_type'],
+      fieldTypes: {
+        country: 'string',
+        location_type: 'string',
+        location_name: 'string',
+        start: 'string',
+        end: 'string',
+        budget: 'string',
+        vacation_type: 'string'
+      }
+    }
+  },
+  recommend_recipe: {
+    name: 'recommend_recipe',
+    externalUrl: `${BASE_WEBHOOK_URL}/recommend_recipe`,
+    headers: SHARED_HEADERS,
+    validation: {
+      requiredFields: ['ingredients'],
+      fieldTypes: {
+        ingredients: 'string',
+        cuisine: 'string',
+        meal_time: 'string',
+        dietary_restrictions: 'array',
+        diets: 'array',
+        recipe_count: 'number'
+      }
+    }
+  },
+  generate_random_recipe: {
+    name: 'generate_random_recipe',
+    externalUrl: `${BASE_WEBHOOK_URL}/generate_random_recipe`,
+    headers: SHARED_HEADERS,
+    validation: {
+      requiredFields: [],
+      fieldTypes: {
+        cuisine: 'string',
+        dietary_restrictions: 'array',
+        diets: 'array'
+      }
+    }
   }
   // Add more webhooks here as needed
 };
@@ -221,4 +267,87 @@ export type ChatGpt2MemoryResponse = ChatGpt2MemoryMessage[];
 export interface ChatGpt2MemoryMessage {
   human: string;
   ai: string;
+}
+
+// Vacation Planner types
+export interface POI {
+  priority: number;
+  title: string;
+  description: string;
+  why_visit: string;
+  admission: 'FREE' | 'PAID' | 'VARIES';
+}
+
+export interface Holiday {
+  holiday_name: string;
+  holiday_type: string;
+}
+
+export interface VacationPlanResponse {
+  output?: {
+    pois: POI[];
+    holidays: Holiday[];
+  };
+  result?: {
+    pois: POI[];
+    holidays: Holiday[];
+  };
+  pois?: POI[];
+  holidays?: Holiday[];
+}
+
+// Recipe Recommender types
+export interface RecipeNutrients {
+  Calories: string;
+  Fat: string;
+  "Saturated Fat": string;
+  Carbohydrates: string;
+  "Net Carbohydrates": string;
+  Sugar: string;
+  Cholesterol: string;
+  Sodium: string;
+  Alcohol: string;
+  "Alcohol %": string;
+  Protein: string;
+  Manganese: string;
+  Folate: string;
+  "Vitamin K": string;
+  Fiber: string;
+  "Vitamin B6": string;
+  Phosphorus: string;
+  Copper: string;
+  "Vitamin B3": string;
+  Potassium: string;
+  Selenium: string;
+  Iron: string;
+  "Vitamin A": string;
+  "Vitamin B1": string;
+  Magnesium: string;
+  "Vitamin B2": string;
+  Zinc: string;
+  "Vitamin C": string;
+  "Vitamin E": string;
+  "Vitamin B5": string;
+  Calcium: string;
+  "Vitamin B12": string;
+}
+
+export interface RecipeItem {
+  title: string;
+  description: string;
+  price_per_serving: string;
+  time_to_make: number;
+  steps: string[];
+  nutritients: RecipeNutrients;
+  nutrition_score: number;
+  food_link: string;
+  image_link: string;
+}
+
+export interface RecipeRecommenderResponse {
+  output?: {
+    recipes: RecipeItem[];
+  };
+  recipes?: RecipeItem[];
+  result?: RecipeItem[];
 }

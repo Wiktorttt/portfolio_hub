@@ -126,7 +126,7 @@ export async function executeWebhook(
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`Webhook ${webhookName} error:`, response.status, errorText);
+      
       return {
         success: false,
         error: `Webhook request failed: ${response.status} - ${errorText}`
@@ -140,7 +140,7 @@ export async function executeWebhook(
     };
 
   } catch (error) {
-    console.error(`Webhook ${webhookName} execution error:`, error);
+    
     
     // Handle specific error types
     if (error instanceof Error) {

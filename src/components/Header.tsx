@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 interface HeaderProps {
   title: string;
   description: string;
-  accent: 'blue' | 'violet' | 'indigo' | 'teal' | 'orange' | 'cyan';
+  accent: 'blue' | 'violet' | 'indigo' | 'teal' | 'orange' | 'cyan' | 'pink';
   icon: React.ReactNode;
   isDark?: boolean;
 }
@@ -17,6 +17,7 @@ const accentBg: Record<HeaderProps['accent'], string> = {
   teal: 'bg-teal-50 ring-teal-100',
   orange: 'bg-orange-50 ring-orange-100',
   cyan: 'bg-cyan-50 ring-cyan-100',
+  pink: 'bg-pink-50 ring-pink-100',
 };
 
 const accentSolid: Record<HeaderProps['accent'], string> = {
@@ -26,6 +27,7 @@ const accentSolid: Record<HeaderProps['accent'], string> = {
   teal: 'bg-teal-600',
   orange: 'bg-orange-500',
   cyan: 'bg-cyan-600',
+  pink: 'bg-pink-500',
 };
 
 export default function Header({ title, description, accent, icon, isDark }: HeaderProps) {

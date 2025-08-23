@@ -109,7 +109,7 @@ export default function IdeaGeneratorPage() {
             }
           } catch {
             // If parsing fails, treat as string
-            console.warn('Failed to parse sanitized output as JSON');
+    
           }
         } else if (responseData.output?.text) {
           // Try to parse JSON from text output
@@ -120,20 +120,20 @@ export default function IdeaGeneratorPage() {
             }
           } catch {
             // If parsing fails, treat as string
-            console.warn('Failed to parse text output as JSON');
+
           }
         }
       }
       
       setIdeas(ideasData);
     } catch (error) {
-      console.error('Error parsing ideas data:', error);
+      
       setIdeas([]);
     }
   };
 
   const handleError = (error: unknown) => {
-    console.error('Idea Generator error:', error);
+    // Handle error silently
   };
 
   return (
@@ -325,7 +325,7 @@ export default function IdeaGeneratorPage() {
                       disabled={!context.trim()}
                     >
                       <Rocket className="w-5 h-5 mr-2" />
-                      Wygeneruj
+                      Wygeneruj Pomysły
                     </WebhookButton>
                   </div>
                 </div>

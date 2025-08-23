@@ -12,6 +12,7 @@ import {
   LineChart,
     Gamepad2,
     MessageSquareText,
+    Plane,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -71,6 +72,13 @@ export default function Home() {
       icon: ChefHat,
       accent: 'orange',
     },
+    {
+      id: 'vacation-planner',
+      name: 'Planer Podróży',
+      description: 'Znajdź najlepsze miejsca do odwiedzenia podczas wakacji',
+      icon: Plane,
+      accent: 'pink',
+    },
   ] as const;
 
   // No upcoming tools shown on the main page
@@ -95,18 +103,14 @@ export default function Home() {
         setIsServerDown(true);
       }
     } catch (error: unknown) {
-      console.error('N8N status check failed:', error);
-      
-      // Check if it's a connection refused error
+      // Quiet error handling - no console.error
+      // Handle all error cases gracefully
       const errorObj = error as ErrorResponse;
-      if (errorObj?.response?.status === 400 || errorObj?.code === 'ECONNREFUSED') {
-        setN8nStatus('Serwer wyłączony');
-        setIsServerDown(true);
-      } else {
-
-        setN8nStatus('Serwer wyłączony');
-        setIsServerDown(true);
-      }
+      const statusCode = errorObj?.response?.status;
+      
+      // Any error (400, 500, network, etc.) should show as disconnected
+      setN8nStatus('Serwer wyłączony');
+      setIsServerDown(true);
     }
   };
 
@@ -203,6 +207,7 @@ export default function Home() {
                 indigo: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-indigo-50 ring-indigo-100 hover:ring-indigo-200',
                 teal: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-teal-50 ring-teal-100 hover:ring-teal-200',
                 orange: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-orange-50 ring-orange-100 hover:ring-orange-200',
+                pink: isDark ? 'bg-slate-900 ring-slate-800 hover:ring-slate-700' : 'bg-pink-50 ring-pink-100 hover:ring-pink-200',
               } as const;
               const iconBg = {
                 blue: 'bg-blue-600 text-white',
@@ -210,6 +215,7 @@ export default function Home() {
                 indigo: 'bg-indigo-600 text-white',
                 teal: 'bg-teal-600 text-white',
                 orange: 'bg-orange-500 text-white',
+                pink: 'bg-pink-500 text-white',
               } as const;
               const dot = {
                 blue: 'bg-blue-500',
@@ -217,6 +223,7 @@ export default function Home() {
                 indigo: 'bg-indigo-500',
                 teal: 'bg-teal-500',
                 orange: 'bg-orange-500',
+                pink: 'bg-pink-500',
               } as const;
 
               const Card = (

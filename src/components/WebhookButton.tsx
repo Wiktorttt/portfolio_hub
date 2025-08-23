@@ -41,8 +41,6 @@ export default function WebhookButton({
       toast.success('Żądanie zakończone pomyślnie!');
       onSuccess?.(response.data);
     } catch (error: unknown) {
-      console.error('Webhook error:', error);
-      
       // More robust error handling
       let errorMessage = 'Wystąpił błąd podczas przetwarzania Twojego żądania';
       
@@ -76,12 +74,13 @@ export default function WebhookButton({
       onClick={handleClick}
       disabled={isLoading || disabled}
       className={cn(
-        "px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 disabled:from-emerald-400 disabled:to-teal-500",
-        "text-white font-medium rounded-lg transition-all duration-300",
-        "focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2",
+        "px-6 py-3 text-white font-medium rounded-lg transition-all duration-300",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2",
         "disabled:cursor-not-allowed",
         "transform active:scale-95 hover:scale-105",
-        className
+        "flex items-center justify-center",
+        // Use custom className if provided, otherwise use default emerald gradient
+        className || "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 disabled:from-emerald-400 disabled:to-teal-500 focus:ring-emerald-500"
       )}
     >
       {isLoading ? (
